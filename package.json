@@ -1,0 +1,23 @@
+{
+  "name": "seed-picker-solitaire",
+  "version": "0.0.1",
+  "description": "Generate a BIP39 seed phrase offline using an ordinary deck of playing cards.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimbojw/seed-picker-solitaire.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "bip39"
+  ],
+  "author": "jimbo",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jimbojw/seed-picker-solitaire/issues"
+  },
+  "homepage": "https://github.com/jimbojw/seed-picker-solitaire#readme"
+}
