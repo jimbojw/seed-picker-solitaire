@@ -18,3 +18,21 @@
  * @fileoverview Produce the SeedPicker Solitaire lookup table.
  */
 
+// NPM modules.
+import {Logger} from 'tslog';
+
+async function main() {
+  const LOG_LEVEL =
+    (process.env.LOG_LEVEL || 'silly') as
+    ('silly' | 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal');
+
+  const log = new Logger({
+    minLevel: LOG_LEVEL,
+    prettyInspectHighlightStyles: {},
+  });
+  log.info('Starting up.');
+}
+
+main().catch(err => {
+  throw err;
+});
