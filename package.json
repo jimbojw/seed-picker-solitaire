@@ -4,6 +4,8 @@
   "description": "Generate a BIP39 seed phrase offline using an ordinary deck of playing cards.",
   "main": "index.js",
   "scripts": {
+    "make-table": "ts-node ./src/make-table.ts",
+    "make-table-dev": "nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-table.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/jimbojw/seed-picker-solitaire/issues"
   },
-  "homepage": "https://github.com/jimbojw/seed-picker-solitaire#readme"
+  "homepage": "https://github.com/jimbojw/seed-picker-solitaire#readme",
+  "devDependencies": {
+    "nodemon": "2.0.7"
+  },
+  "dependencies": {
+    "ts-node": "9.1.1"
+  }
 }
