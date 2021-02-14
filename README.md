@@ -51,5 +51,25 @@ To play SeedPicker Solitaire, you'll need:
 If you deck is missing cards, you can still use it, but the amount of entropy that it produces will be slightly less than would be produced by a full deck.
 How much less is a function of how many cards are missing.
 
+## Producing the Lookup Table
 
+To run the code in this repo to produce the lookup table, you'll need Node.js.
+Install Node.js, then install the prerequisites using the following command:
 
+```sh
+$ npm install
+```
+
+To make the table just once, run this command:
+
+```sh
+$ npm run make-table
+```
+
+To keep the table making code running continuously, run this command:
+
+```sh
+$ npm run make-table-dev
+```
+
+This code will create a `dist` directory if it doesn't already exist and place a file called `table.html` there.

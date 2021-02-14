@@ -23,14 +23,14 @@ import {Logger} from 'tslog';
 
 async function main() {
   const LOG_LEVEL =
-    (process.env.LOG_LEVEL || 'silly') as
+    (process.env.LOG_LEVEL || 'info') as
     ('silly' | 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal');
 
   const log = new Logger({
     minLevel: LOG_LEVEL,
     prettyInspectHighlightStyles: {},
   });
-  log.info('Starting up.');
+  log.silly('Starting up.');
 }
 
 main().catch(err => {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "make-table": "ts-node ./src/make-table.ts",
-    "make-table-dev": "nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-table.ts'",
+    "make-table-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-table.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
