@@ -46,3 +46,20 @@ export const CARDS: readonly Card[] =
     rank: RANKS[index % 13],
     suit: SUITS[Math.floor(index / 13)],
   })));
+
+export interface Tuple {
+  first: Card;
+  second: Card;
+}
+
+export const TUPLES: readonly Tuple[] = (() => {
+  const tuples: Tuple[] = [];
+
+  for (let i = 0; i < 52; i++) {
+    for (let j = 0; j < 52; j++) {
+      tuples[i * 52 + j] = {first: CARDS[i], second: CARDS[j]};
+    }
+  }
+
+  return Object.freeze(tuples);
+})();
