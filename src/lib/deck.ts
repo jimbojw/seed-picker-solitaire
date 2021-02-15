@@ -47,18 +47,54 @@ export const CARDS: readonly Card[] =
     suit: SUITS[Math.floor(index / 13)],
   })));
 
+/**
+ * An ordered tuple consists of two cards pulled from a deck. Those that yield
+ * a BIP39 seed word will have a wordIndex property with a value from 0-2047.
+ * Those tuples that do not yield a word will have wordIndex === undefined.
+ */
 export interface Tuple {
   first: Card;
   second: Card;
+  wordIndex?: number;
 }
 
 export const TUPLES: readonly Tuple[] = (() => {
-  const tuples: Tuple[] = [];
+  // Total number of possible tuples.
+  const TUPLE_COUNT = 52 * 52;
 
+  // Begin marking indidces for skipping, starting with same-card tuples.
+  const skipIndices: Set<number> = new Set();
   for (let i = 0; i < 52; i++) {
-    for (let j = 0; j < 52; j++) {
-      tuples[i * 52 + j] = {first: CARDS[i], second: CARDS[j]};
+    skipIndices.add(i * 53);
+  }
+
+  // Continue marking tuple indices for skipping by extending the run of skips
+  // on each card by working through cards of the same rank.
+  (() => {
+    for (let diagonal = 1; diagonal < RANKS.length; diagonal++) {
+      for (let rowOff = 0; rowOff < RANKS.length - diagonal; rowOff++) {
+        for (let suitOff = 0; suitOff < SUITS.length; suitOff++) {
+          const row = suitOff * RANKS.length + rowOff;
+          const col = row + diagonal;
+          skipIndices.add(row * 52 + col);
+          skipIndices.add(col * 52 + row);
+          if (TUPLE_COUNT - skipIndices.size <= 2048) {
+            return;
+          }
+        }
+      }
     }
+  })();
+
+  // Construct tuples of cards, including the BIP39 word index.
+  const tuples: Tuple[] = [];
+  let wordIndex = 0;
+  for (let index = 0; index < TUPLE_COUNT; index++) {
+    tuples[index] = Object.freeze({
+      first: CARDS[Math.floor(index / 52)],
+      second: CARDS[index % 52],
+      wordIndex: skipIndices.has(index) ? undefined : wordIndex++,
+    });
   }
 
   return Object.freeze(tuples);
