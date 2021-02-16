@@ -26,25 +26,15 @@ import * as Bip39 from 'bip39';
 import * as d3 from 'd3';
 import * as fs from 'fs-extra';
 import {JSDOM} from 'jsdom';
-import {Logger} from 'tslog';
+import {Logger, TLogLevelName} from 'tslog';
 
 // Local modules.
-import {CARDS, RANKS, SUITS, TUPLES} from './lib/deck';
+import {CARDS, TUPLES} from './lib/deck';
 
-async function main() {
-  const LOG_LEVEL =
-    (process.env.LOG_LEVEL || 'info') as
-    ('silly' | 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal');
-
-  const log = new Logger({
-    minLevel: LOG_LEVEL,
-    prettyInspectHighlightStyles: {},
-  });
-  log.silly('Starting up.');
-
-  const srcDir = path.join(__dirname);
-  const distDir = path.join(__dirname, '..', 'dist');
-
+/**
+ * Write out a word presence table as a text file to the specified path.
+ */
+async function makeWordPresenceTable(outputFile: string) {
   const ranks = 'A23456789XJQK';
   const suits = '\u2660\u2661\u2662\u2663';
   const header = [
@@ -71,15 +61,19 @@ async function main() {
       lines.push(line.join(''));
     }
   }
-  const tupleArtFile = path.join(distDir, 'tuple-art.txt');
-  log.info(`Writing word-presence table to ${tupleArtFile}.`);
-  await fs.outputFile(tupleArtFile, lines.join('\n'));
+  return fs.outputFile(outputFile, lines.join('\n'));
+}
 
+/**
+ * Write out a word lookup table as an HTML file to the specified path.
+ */
+async function makeLookupTable(outputFile: string) {
   // Create HTML document for table.
   const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
   const doc = d3.select(dom.window.document);
 
   // Read CSS file and insert style content.
+  const srcDir = path.join(__dirname);
   const styleFile = path.join(srcDir, 'style', 'make-table.css');
   const style = (await fs.readFile(styleFile))
     .toString('utf-8')
@@ -115,11 +109,11 @@ async function main() {
   const entries = rows.append('td')
     .append('table')
     .selectAll('tr')
-    .data(({index: cardIndex}) => d3.range(RANKS.length)
+    .data(({index: cardIndex}) => d3.range(13)
       .map(rankIndex => cardIndex * 52 + rankIndex))
     .join('tr')
     .selectAll('td')
-    .data(tupleIndex => d3.range(SUITS.length)
+    .data(tupleIndex => d3.range(4)
       .map(suitIndex => tupleIndex + suitIndex * 13))
     .join('td')
     .append('div')
@@ -151,9 +145,31 @@ async function main() {
     .text(tupleIndex => words[TUPLES[tupleIndex].wordIndex] || blankText);
 
   // Serialize document to file.
-  const outputHTMLFile = path.join(distDir, 'lookup-table.html');
-  log.info(`Writing word lookup HTML table to ${outputHTMLFile}.`);
-  return fs.outputFile(outputHTMLFile, dom.serialize());
+  return fs.outputFile(outputFile, dom.serialize());
+}
+
+/**
+ * Set up logging, then queue tasks.
+ */
+async function main() {
+  const log = new Logger({
+    minLevel: (process.env.LOG_LEVEL || 'info') as TLogLevelName,
+    prettyInspectHighlightStyles: {},
+  });
+
+  const distDir = path.join(__dirname, '..', 'dist');
+  const promises: Array<Promise<unknown>> = [];
+
+  const wordPresenceFile = path.join(distDir, 'word-presence.txt');
+  log.info(`Writing word-presence table to ${wordPresenceFile}.`);
+  promises.push(makeWordPresenceTable(wordPresenceFile));
+
+  const lookupTableFile = path.join(distDir, 'lookup-table.html');
+  log.info(`Writing word lookup HTML table to ${lookupTableFile}.`);
+  promises.push(makeLookupTable(lookupTableFile));
+
+  await Promise.all(promises);
+  log.info('Done.');
 }
 
 main().catch(err => {
