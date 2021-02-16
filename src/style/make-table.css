@@ -1,0 +1,76 @@
+/**
+ * @license
+ * Copyright 2021 jimbo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * @fileoverview Styles for the solitaire lookup table.
+ */
+
+ body {
+   font-family: monospace;
+   line-height: .82;
+ }
+
+ span {
+   display: inline-block;
+ }
+
+ tr, td {
+   page-break-inside: avoid;
+ }
+
+ td {
+   padding-left: 1em;
+ }
+
+ .card {
+   align-items: center;
+   display: flex;
+   flex-direction: column;
+   font-family: "Abril FatFace", serif;
+   font-size: 3em;
+   justify-content: space-around;
+   margin-right: 1em;
+ }
+
+ .card .rank-10 {
+   left: -.3em;
+   letter-spacing: -.1em;
+   position: relative;
+   width: 0;
+ }
+
+ .rank-10 {
+   letter-spacing: -.15em;
+   margin-right: .2em;
+ }
+
+ .card .rank-Q {
+   line-height: 1.2;
+ }
+
+ .entry-cell {
+   display: flex;
+   flex-direction: row;
+   justify-content: start;
+ }
+
+ .entry-pips {
+   display: flex;
+   flex-direction: row;
+   justify-content: end;
+   margin-right: .5em;
+   width: 2em;
+ }
