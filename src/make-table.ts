@@ -22,10 +22,7 @@
 import * as path from 'path';
 
 // NPM modules.
-import * as Bip39 from 'bip39';
-import * as d3 from 'd3';
 import * as fs from 'fs-extra';
-import {JSDOM} from 'jsdom';
 import {Logger, TLogLevelName} from 'tslog';
 
 // Local modules.
