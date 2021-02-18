@@ -29,10 +29,8 @@ import {JSDOM} from 'jsdom';
 import {Logger, TLogLevelName} from 'tslog';
 
 // Local modules.
-import {CARDS, TUPLES} from './lib/deck';
 import {makeLookupTable} from './lib/make-lookup-table';
 import {makeWordPresenceTable} from './lib/make-word-presence-table';
-import {resolveCssImports} from './lib/resolve-css-imports';
 
 /**
  * Set up logging, then queue tasks.
