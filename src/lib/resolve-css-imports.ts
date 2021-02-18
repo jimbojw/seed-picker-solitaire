@@ -77,34 +77,45 @@ async function resolveImports(css, dataDir) {
  * Embed fonts.
  */
 async function embedFonts(css, dataDir) {
-  const fontJobs = css.split(/(@font-face[^\S]+\{[^}]*\})/gm)
-    .map(async (rule) => {
-      if (!rule.startsWith('@font-face')) {
-        return rule;
-      }
+  const rules = css.split(/(@font-face[^\S]+\{[^}]*\})/gm);
 
-      return (await Promise.all(
-        rule.split(/(src:\s+url\(.*?\);)/g).map(async (chunk) => {
-          if (!chunk.startsWith('src:')) {
-            return chunk;
-          }
+  const fontJobs = rules.map(async (rule) => {
+    if (!rule.startsWith('@font-face')) {
+      return rule;
+    }
 
-          const url = chunk.match(URL_REGEX)[1];
-          const ext = url.replace(/^.*(\.[^\.]+)$/, '$1');
-          const mediaType = FONT_TYPES[ext];
+    const srcJobs = rule.split(/(src:\s+url\([^\)]+\))/g)
+      .map(chunk => replaceSrcUrlsWithFonts(chunk, dataDir));
 
-          if (!mediaType) {
-            throw new Error('Could not determine media type for font URL.');
-          }
+    return (await Promise.all(srcJobs)).join('');
+  });
 
-          const fontData = await fetchCached(url, dataDir);
-          const encodedData = fontData.toString('base64');
-          const encodedUrl = `url(data:${mediaType};base64,${encodedData})`;
-          return chunk.replace(URL_REGEX, encodedUrl);
-        })
-      )).join('');
-    });
   return (await Promise.all(fontJobs)).join('');
+}
+
+/**
+ * Given a chunk of CSS that may contain a 'src: url(...)', replace the content
+ * inside the url() with the result of downloading it creating a base64 encoded
+ * data URI out of it.
+ */
+async function replaceSrcUrlsWithFonts(srcCss, dataDir) {
+  if (!srcCss.includes('src:')) {
+    return srcCss;
+  }
+
+  const url = srcCss.match(URL_REGEX)[1];
+  const ext = url.replace(/^.*(\.[^\.]+)$/, '$1');
+  const mediaType = FONT_TYPES[ext];
+
+  if (!mediaType) {
+    throw new Error('Could not determine media type for font URL.');
+  }
+
+  const fontData = await fetchCached(url, dataDir);
+  const encodedData = fontData.toString('base64');
+  const encodedUrl = `url(data:${mediaType};base64,${encodedData})`;
+
+  return srcCss.replace(URL_REGEX, encodedUrl);
 }
 
 /**
@@ -121,11 +132,11 @@ async function fetchCached(url, dataDir) {
   }
 
   // Try to fetch the URL and cache it.
+  let content;
   try {
     const response = await fetch(url);
-    const content = await response.buffer();
+    content = await response.buffer();
     await fs.writeFile(dataFile, content);
-    return content;
   } catch (err) {
     // Something went wrong, try to read the cached file instead.
     if (stats) {
@@ -134,5 +145,5 @@ async function fetchCached(url, dataDir) {
     throw err;
   }
 
-  return Promise.reject('Unreachable code reached.');
+  return content;
 }
