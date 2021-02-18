@@ -30,6 +30,7 @@ import {Logger, TLogLevelName} from 'tslog';
 
 // Local modules.
 import {CARDS, TUPLES} from './lib/deck';
+import {resolveCssImports} from './lib/resolve-css-imports';
 
 /**
  * Write out a word presence table as a text file to the specified path.
@@ -71,17 +72,26 @@ async function makeWordPresenceTable(outputFile: string) {
  */
 async function makeLookupTable(outputFile: string) {
   // Create HTML document for table.
-  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
+  const dom = new JSDOM('<!DOCTYPE html><html></html>');
   const doc = d3.select(dom.window.document);
+  doc.select('head').html(`
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+  `.replace(/^\s+/gm, ''));
+
+  // Determine relative source, data and dist directories.
+  const srcDir = path.join(__dirname);
+  const dataDir = path.join(__dirname, '..', 'data');
+  await fs.ensureDir(dataDir);
 
   // Read CSS file and insert style content.
-  const srcDir = path.join(__dirname);
   const styleFile = path.join(srcDir, 'style', 'make-table.css');
   const style = (await fs.readFile(styleFile))
     .toString('utf-8')
     .replace(/\/\*[\s\S]*?\*\//gm, '')  // Strip comments.
     .trim();
-  doc.select('head').append('style').html(style);
+  const resolvedStyle = await resolveCssImports(style, dataDir);
+  doc.select('head').append('style').html(resolvedStyle);
 
   // Tuples are arranged by first card. Each card is a table with a single row.
   const rows = doc.select('body')

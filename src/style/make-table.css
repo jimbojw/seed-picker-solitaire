@@ -17,60 +17,62 @@
 /**
  * @fileoverview Styles for the solitaire lookup table.
  */
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 
- body {
-   font-family: monospace;
-   line-height: .82;
- }
+body {
+  font-family: monospace;
+  line-height: .82;
+}
 
- span {
-   display: inline-block;
- }
+span {
+  display: inline-block;
+}
 
- tr, td {
-   page-break-inside: avoid;
- }
+tr, td {
+  page-break-inside: avoid;
+}
 
- td {
-   padding-left: 1em;
- }
+td {
+  padding-left: 1em;
+}
 
- .card {
-   align-items: center;
-   display: flex;
-   flex-direction: column;
-   font-family: "Abril FatFace", serif;
-   font-size: 3em;
-   justify-content: space-around;
-   margin-right: 1em;
- }
+.card {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-family: "Abril FatFace", serif;
+  font-size: 3em;
+  font-weight: 400;
+  justify-content: space-around;
+  margin-right: 1em;
+}
 
- .card .rank-10 {
-   left: -.3em;
-   letter-spacing: -.1em;
-   position: relative;
-   width: 0;
- }
+.card .rank-10 {
+  left: -.3em;
+  letter-spacing: -.1em;
+  position: relative;
+  width: 0;
+}
 
- .rank-10 {
-   letter-spacing: -.15em;
-   margin-right: .2em;
- }
+.rank-10 {
+  letter-spacing: -.15em;
+  margin-right: .2em;
+}
 
- .card .rank-Q {
-   line-height: 1.2;
- }
+.card .rank-Q {
+  line-height: 1.2;
+}
 
- .entry-cell {
-   display: flex;
-   flex-direction: row;
-   justify-content: start;
- }
+.entry-cell {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+}
 
- .entry-pips {
-   display: flex;
-   flex-direction: row;
-   justify-content: end;
-   margin-right: .5em;
-   width: 2em;
- }
+.entry-pips {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  margin-right: .5em;
+  width: 2em;
+}
