@@ -38,12 +38,14 @@ async function makeWordPresenceTable(outputFile: string) {
   const ranks = 'A23456789XJQK';
   const suits = '\u2660\u2661\u2662\u2663';
   const header = [
-    '',
     `     ${(ranks + '  ').repeat(4)}`,
     `     ${d3.range(4).map(s => suits[s].repeat(13)).join('  ')}`,
   ];
   const lines = [];
   for (let rowSuit = 0; rowSuit < 4; rowSuit++) {
+    if (rowSuit) {
+      lines.push('');
+    }
     lines.push(...header);
     for (let rowRank = 0; rowRank < 13; rowRank++) {
       const rowOffset = 52 * (rowSuit * 13 + rowRank);
@@ -61,7 +63,7 @@ async function makeWordPresenceTable(outputFile: string) {
       lines.push(line.join(''));
     }
   }
-  return fs.outputFile(outputFile, lines.join('\n'));
+  return fs.outputFile(outputFile, lines.join('\n') + '\n');
 }
 
 /**
