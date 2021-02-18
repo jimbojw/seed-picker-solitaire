@@ -31,41 +31,7 @@ import {Logger, TLogLevelName} from 'tslog';
 // Local modules.
 import {CARDS, TUPLES} from './lib/deck';
 import {resolveCssImports} from './lib/resolve-css-imports';
-
-/**
- * Write out a word presence table as a text file to the specified path.
- */
-async function makeWordPresenceTable(outputFile: string) {
-  const ranks = 'A23456789XJQK';
-  const suits = '\u2660\u2661\u2662\u2663';
-  const header = [
-    `     ${(ranks + '  ').repeat(4)}`,
-    `     ${d3.range(4).map(s => suits[s].repeat(13)).join('  ')}`,
-  ];
-  const lines = [];
-  for (let rowSuit = 0; rowSuit < 4; rowSuit++) {
-    if (rowSuit) {
-      lines.push('');
-    }
-    lines.push(...header);
-    for (let rowRank = 0; rowRank < 13; rowRank++) {
-      const rowOffset = 52 * (rowSuit * 13 + rowRank);
-      const line = [` ${ranks[rowRank]}${suits[rowSuit]}  `];
-      for (let colSuit = 0; colSuit < 4; colSuit++) {
-        for (let colRank = 0; colRank < 13; colRank++) {
-          const index = rowOffset + colSuit * 13 + colRank;
-          const tuple = TUPLES[index];
-          line.push(tuple.wordIndex === undefined ? '.' : '#');
-          if (colRank === 12 && colSuit < 3) {
-            line.push('  ');
-          }
-        }
-      }
-      lines.push(line.join(''));
-    }
-  }
-  return fs.outputFile(outputFile, lines.join('\n') + '\n');
-}
+import {makeWordPresenceTable} from './lib/make-word-presence-table';
 
 /**
  * Write out a word lookup table as an HTML file to the specified path.
@@ -174,7 +140,8 @@ async function main() {
 
   const wordPresenceFile = path.join(distDir, 'word-presence.txt');
   log.info(`Writing word-presence table to ${wordPresenceFile}.`);
-  promises.push(makeWordPresenceTable(wordPresenceFile));
+  const wordPresenceText = await makeWordPresenceTable();
+  promises.push(fs.outputFile(wordPresenceFile, wordPresenceText));
 
   const lookupTableFile = path.join(distDir, 'lookup-table.html');
   log.info(`Writing word lookup HTML table to ${lookupTableFile}.`);
