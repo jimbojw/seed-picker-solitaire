@@ -35,6 +35,7 @@ import {CARDS, TUPLES} from './deck';
 export async function makeLookupTable(container: HTMLElement) {
   // Tuples are arranged by first card. Each card is a table with a single row.
   const rows = d3.select(container)
+    .classed('lookup-table', true)
     .selectAll('table')
     .data(CARDS)
     .join('table')

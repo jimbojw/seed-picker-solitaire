@@ -19,24 +19,25 @@
  */
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 
-body {
+.lookup-table {
   font-family: monospace;
   line-height: .82;
 }
 
-span {
+.lookup-table span {
   display: inline-block;
 }
 
-tr, td {
+.lookup-table tr,
+.lookup-table td {
   page-break-inside: avoid;
 }
 
-td {
+.lookup-table td {
   padding-left: 1em;
 }
 
-.card {
+.lookup-table .card {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -47,29 +48,29 @@ td {
   margin-right: 1em;
 }
 
-.card .rank-10 {
+.lookup-table .card .rank-10 {
   left: -.3em;
   letter-spacing: -.1em;
   position: relative;
   width: 0;
 }
 
-.rank-10 {
+.lookup-table .rank-10 {
   letter-spacing: -.15em;
   margin-right: .2em;
 }
 
-.card .rank-Q {
+.lookup-table .card .rank-Q {
   line-height: 1.2;
 }
 
-.entry-cell {
+.lookup-table .entry-cell {
   display: flex;
   flex-direction: row;
   justify-content: start;
 }
 
-.entry-pips {
+.lookup-table .entry-pips {
   display: flex;
   flex-direction: row;
   justify-content: end;
