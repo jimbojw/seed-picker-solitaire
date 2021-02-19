@@ -63,7 +63,7 @@ async function main() {
   `.replace(/^\s+/gm, ''));
 
   // Read CSS file and insert style content.
-  const styleFile = path.join(srcDir, 'style', 'make-table.css');
+  const styleFile = path.join(srcDir, 'style', 'lookup-table.css');
   log.debug(`Resolving CSS imports from ${styleFile}.`);
   const resolvedStyle = await resolveCssImports(styleFile, dataDir);
   doc.select('head').append('style').html(resolvedStyle);
