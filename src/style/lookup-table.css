@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 /**
- * @fileoverview Styles for the solitaire lookup table.
+ * @fileoverview Styles for the solitaire lookup table. Fonts are expected to
+ * be loaded by typography.css.
  */
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 
 .lookup-table {
   line-height: .82;
