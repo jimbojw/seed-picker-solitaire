@@ -20,17 +20,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 
 .lookup-table {
-  font-family: monospace;
   line-height: .82;
 }
 
 .lookup-table span {
   display: inline-block;
-}
-
-.lookup-table tr,
-.lookup-table td {
-  page-break-inside: avoid;
 }
 
 .lookup-table td {

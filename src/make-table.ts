@@ -63,10 +63,14 @@ async function main() {
   `.replace(/^\s+/gm, ''));
 
   // Read CSS file and insert style content.
-  const styleFile = path.join(srcDir, 'style', 'lookup-table.css');
-  log.debug(`Resolving CSS imports from ${styleFile}.`);
-  const resolvedStyle = await resolveCssImports(styleFile, dataDir);
-  doc.select('head').append('style').html(resolvedStyle);
+  const styleDir = path.join(srcDir, 'style');
+  const styleFiles = ['typography.css', 'lookup-table.css'];
+  log.debug(`Resolving CSS imports.`);
+  const resolvedStyles = await Promise.all(
+    styleFiles.map(async (styleFile) =>
+      resolveCssImports(path.join(styleDir, styleFile), dataDir))
+  );
+  doc.select('head').append('style').html(resolvedStyles.join('\n'));
 
   // Render lookup table and write it out.
   const lookupTableFile = path.join(distDir, 'lookup-table.html');
