@@ -24,41 +24,17 @@ import * as path from 'path';
 // NPM modules.
 import * as Bip39 from 'bip39';
 import * as d3 from 'd3';
-import * as fs from 'fs-extra';
-import {JSDOM} from 'jsdom';
 
 // Local modules.
 import {CARDS, TUPLES} from './deck';
-import {resolveCssImports} from './resolve-css-imports';
 
 /**
- * Write out a word lookup table as an HTML file to the specified path.
+ * Given an HTMLElement container node, fill it with the SeedPicker Solitaire
+ * lookup table.
  */
-export async function makeLookupTable() {
-  // Create HTML document for table.
-  const dom = new JSDOM('<!DOCTYPE html><html></html>');
-  const doc = d3.select(dom.window.document);
-  doc.select('head').html(`
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-  `.replace(/^\s+/gm, ''));
-
-  // Determine relative source, data and dist directories.
-  const srcDir = path.join(__dirname, '..');
-  const dataDir = path.join(srcDir, '..', 'data');
-  await fs.ensureDir(dataDir);
-
-  // Read CSS file and insert style content.
-  const styleFile = path.join(srcDir, 'style', 'make-table.css');
-  const style = (await fs.readFile(styleFile))
-    .toString('utf-8')
-    .replace(/\/\*[\s\S]*?\*\//gm, '')  // Strip comments.
-    .trim();
-  const resolvedStyle = await resolveCssImports(style, dataDir);
-  doc.select('head').append('style').html(resolvedStyle);
-
+export async function makeLookupTable(container: HTMLElement) {
   // Tuples are arranged by first card. Each card is a table with a single row.
-  const rows = doc.select('body')
+  const rows = d3.select(container)
     .selectAll('table')
     .data(CARDS)
     .join('table')
@@ -119,7 +95,4 @@ export async function makeLookupTable() {
     .classed('entry-word', true)
     .style('width', `${maxLength}em`)
     .text(tupleIndex => words[TUPLES[tupleIndex].wordIndex] || blankText);
-
-  // Serialize document to file.
-  return dom.serialize();
 }

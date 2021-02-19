@@ -43,18 +43,29 @@ const URL_REGEX = /url\(\s*([^\)]+)\s*\)/;
 /**
  * Given a string of CSS, resolve all import statements then embed all fonts.
  *
- * @param css string CSS content for which to resolve @import statements.
+ * @param styleFile string Path to CSS file to resolve.
  * @param dataDir string path to directory to find/store data.
+ * @return Promise<string> of the CSS content with all imports resolved.
  */
-export async function resolveCssImports(css, dataDir) {
+export async function resolveCssImports(styleFile, dataDir) {
+  const css = await fs.readFile(styleFile, 'utf8');
   const resolvedCss = await resolveImports(css, dataDir);
   return embedFonts(resolvedCss, dataDir);
 };
 
 /**
+ * Strip comments out of a string of CSS.
+ */
+function stripComments(css) {
+  return css.replace(/\/\*[\s\S]*?\*\//gm, '').trim();
+}
+
+/**
  * Just resolve CSS imports.
  */
 async function resolveImports(css, dataDir) {
+  css = stripComments(css);
+
   let importsRemain = true;
   do {
     importsRemain = false;
@@ -66,10 +77,11 @@ async function resolveImports(css, dataDir) {
       importsRemain = true;
       const url = chunk.replace(/@import\surl\((['"])(.*?)\1\);?/, '$2');
       const buf = await fetchCached(url, dataDir);
-      return buf.toString('utf8');
+      return stripComments(buf.toString('utf8'));
     });
     css = (await Promise.all(importJobs)).join('');
   } while (importsRemain);
+
   return css;
 }
 

@@ -22,12 +22,15 @@
 import * as path from 'path';
 
 // NPM modules.
+import * as d3 from 'd3';
 import * as fs from 'fs-extra';
+import {JSDOM} from 'jsdom';
 import {Logger, TLogLevelName} from 'tslog';
 
 // Local modules.
 import {makeLookupTable} from './lib/make-lookup-table';
 import {makeWordPresenceTable} from './lib/make-word-presence-table';
+import {resolveCssImports} from './lib/resolve-css-imports';
 
 /**
  * Set up logging, then queue tasks.
@@ -38,17 +41,39 @@ async function main() {
     prettyInspectHighlightStyles: {},
   });
 
+  // Determine relative source, data and dist directories.
+  const srcDir = path.join(__dirname);
+  const dataDir = path.join(srcDir, '..', 'data');
   const distDir = path.join(__dirname, '..', 'dist');
+  await fs.ensureDir(dataDir);
 
+  // Create word presence file.
   const wordPresenceFile = path.join(distDir, 'word-presence.txt');
-  log.info(`Writing word-presence table to ${wordPresenceFile}.`);
+  log.debug('Generating word-presence table');
   const wordPresenceText = await makeWordPresenceTable();
+  log.info(`Writing word-presence table to ${wordPresenceFile}.`);
   await fs.outputFile(wordPresenceFile, wordPresenceText);
 
+  // Create HTML document for table.
+  const dom = new JSDOM('<!DOCTYPE html><html></html>');
+  const doc = d3.select(dom.window.document);
+  doc.select('head').html(`
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+  `.replace(/^\s+/gm, ''));
+
+  // Read CSS file and insert style content.
+  const styleFile = path.join(srcDir, 'style', 'make-table.css');
+  log.debug(`Resolving CSS imports from ${styleFile}.`);
+  const resolvedStyle = await resolveCssImports(styleFile, dataDir);
+  doc.select('head').append('style').html(resolvedStyle);
+
+  // Render lookup table and write it out.
   const lookupTableFile = path.join(distDir, 'lookup-table.html');
+  log.debug('Generating lookup table.');
+  await makeLookupTable(doc.select('body').node() as HTMLElement);
   log.info(`Writing word lookup HTML table to ${lookupTableFile}.`);
-  const lookupTableHtml = await makeLookupTable();
-  await fs.outputFile(lookupTableFile, lookupTableHtml);
+  await fs.outputFile(lookupTableFile, dom.serialize());
 
   log.info('Done!');
 }
