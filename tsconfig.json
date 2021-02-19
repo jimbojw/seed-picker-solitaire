@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "lib": ["es2019", "dom"],
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  }
+}
