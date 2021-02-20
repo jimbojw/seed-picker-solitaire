@@ -18,6 +18,22 @@
  * @fileoverview Typographic styles for the solitaire lookup table and site.
  */
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
+
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1em;
+  margin: 0;
+}
+
+h1 {
+  font-family: "Abril FatFace", serif;
+  font-size: 3em;
+  font-weight: normal;
+}
 
 table {
   font-family: monospace;

@@ -27,31 +27,29 @@
   display: inline-block;
 }
 
-.lookup-table td {
-  padding-left: 1em;
-}
-
 .lookup-table .card {
   align-items: center;
-  display: flex;
-  flex-direction: column;
   font-family: "Abril FatFace", serif;
   font-size: 3em;
-  font-weight: 400;
-  justify-content: space-around;
+  font-weight: normal;
   margin-right: 1em;
 }
 
+.lookup-table .card span {
+  display: block;
+  text-align: center;
+}
+
+.lookup-table .card .suit {
+  font-family: monospace;
+  font-size: 1.7em;
+}
+
 .lookup-table .card .rank-10 {
-  left: -.3em;
+  left: -.1em;
   letter-spacing: -.1em;
   position: relative;
   width: 0;
-}
-
-.lookup-table .rank-10 {
-  letter-spacing: -.15em;
-  margin-right: .2em;
 }
 
 .lookup-table .card .rank-Q {
@@ -59,15 +57,19 @@
 }
 
 .lookup-table .entry-cell {
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
+  text-align: right;
+}
+
+.lookup-table .entry-word {
+  padding-left: .5em;
+  text-align: left;
 }
 
 .lookup-table .entry-pips {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-  margin-right: .5em;
   width: 2em;
+}
+
+.lookup-table .entry-cell .rank-10 {
+  letter-spacing: -.15em;
+  margin-right: .2em;
 }

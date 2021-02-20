@@ -36,13 +36,13 @@ export async function makeLookupTable(container: HTMLElement) {
   // Tuples are arranged by first card. Each card is a table with a single row.
   const rows = d3.select(container)
     .classed('lookup-table', true)
-    .selectAll('table')
+    .append('table')
+    .selectAll('tr')
     .data(CARDS)
-    .join('table')
+    .join('tr')
     .each((d, i, nodes) => d3.select(nodes[i])
         .classed(`card-rank-${d.rank}`, true)
-        .classed(`card-suit-${d.suit.name}`, true))
-    .append('tr');
+        .classed(`card-suit-${d.suit.name}`, true));
 
   // The left cell contains the pips for the first card.
   rows.append('td')
@@ -69,7 +69,6 @@ export async function makeLookupTable(container: HTMLElement) {
     .data(tupleIndex => d3.range(4)
       .map(suitIndex => tupleIndex + suitIndex * 13))
     .join('td')
-    .append('div')
     .classed('entry-cell', true);
 
   // Insert pips into entry cells.
