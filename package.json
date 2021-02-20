@@ -8,6 +8,7 @@
     "make-site-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-site.ts'",
     "make-table": "ts-node ./src/make-table.ts",
     "make-table-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-table.ts'",
+    "publish-site": "gh-pages -d ./dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/jimbojw/seed-picker-solitaire#readme",
   "devDependencies": {
+    "gh-pages": "3.1.0",
     "nodemon": "2.0.7"
   },
   "dependencies": {
