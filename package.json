@@ -4,6 +4,8 @@
   "description": "Generate a BIP39 seed phrase offline using an ordinary deck of playing cards.",
   "main": "index.js",
   "scripts": {
+    "make-site": "ts-node ./src/make-site.ts",
+    "make-site-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-site.ts'",
     "make-table": "ts-node ./src/make-table.ts",
     "make-table-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-table.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,12 +31,17 @@
     "@types/d3": "6.3.0",
     "@types/fs-extra": "9.0.7",
     "@types/jsdom": "16.2.6",
+    "@types/markdown-it": "12.0.1",
     "@types/node": "14.14.28",
     "@types/node-fetch": "2.5.8",
     "bip39": "3.0.3",
     "d3": "6.5.0",
     "fs-extra": "9.1.0",
     "jsdom": "16.4.0",
+    "markdown-it": "12.0.4",
+    "markdown-it-anchor": "7.0.2",
+    "markdown-it-attrs": "4.0.0",
+    "markdown-it-header-sections": "1.0.0",
     "node-fetch": "2.6.1",
     "ts-node": "9.1.1",
     "tslog": "3.1.1"
