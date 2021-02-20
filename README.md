@@ -1,48 +1,17 @@
 
+Live Site: [https://jimbojw.github.io/seed-picker-solitaire/](https://jimbojw.github.io/seed-picker-solitaire/)
+
 # SeedPicker Solitaire
 
 SeedPicker Solitaire is a simple game for generating a Bitcoin seed phrase offline using an ordinary deck of playing cards and a printed lookup table.
 
-## QUICKSTART - How to play
-
-The object of the game is to produce a random ordering of cards which yields the first 23 words of a Bitcoin seed phrase (as described in [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)).
-
-You'll need:
-
-* An ordinary deck of playing cards.
-* The SeedPicker Solitaire [lookup table](dist/lookup-table.html), printed.
-
-Procedure:
-
-1. Shuffle the deck thoroughly.
-1. Deal cards one at a time, face up, from the top of the deck in a line.
-1. As soon as you have two cards in a row with DIFFERENT suits, this is called an *unsuited tuple*.
-   Remove both cards and place them face up on the discard pile.
-1. Continue dealing single cards and removing unsuited tuples until no cards remain in the deck.
-1. When the deck is empty and all unsuited tuples have been discarded, take any remaining cards and place them face up on the discard pile.
-1. Now all cards are in the discard pile. Turn it over, the game is done.
-
-The deck now contains at least 23 consecutive unsuited tuples.
-Use the following procedure to convert each tuple into a seed word:
-
-1. Deal one card from the deck face up.
-1. Turn to the page in lookup table that has that card in the left-most (big) column.
-1. Deal a second card from the deck face up.
-1. Find the second card in the entries table to the right.
-1. Record the seed word next to that word.
-
-Repeat the above steps until you've recorded your 23 seed words.
-You're done!
-The seed you've generated encodes somewhat more than 216 bits of entropy (details further in this document).
-
-Producing the 24th word of a 24-word Bitcoin seed phrase is not doable offline.
-For that you'll need special software or a Bitcoin wallet.
-
-The remainder of this document describes various aspects of SeedPicker Solitaire in more detail.
+Go to the live site for usage instructions.
+This page describes the project background and technical details.
 
 ## Why SeedPicker Solitaire?
 
-This section describes the motivation behind SeedPicker Solitaire and why it might be a good choice for you.
+In short, because your Bitcoin seed is as secure as the entropy that it encodes, and playing cards are good sources of entropy.
+To understand what this means, we should start with a brief explanation of entropy then describe the benefits for producing it.
 
 ### Why does entropy matter?
 
@@ -60,6 +29,10 @@ Computers have internal mechanisms for generating entropy called random number g
 For many applications, these sources of entropy are good enough.
 But for protecting your Bitcoin, you may want more explicit control of the entropy generation process.
 
+There are many ways of producing random data.
+Common examples include flipping coins or rolling dice.
+SeedPicker Soliataire uses an ordinary deck of playing cards.
+
 ### Why use playing cards?
 
 Playing cards are a good choice for generating entropy because:
@@ -75,7 +48,7 @@ Importantly, the skill of randomizing cards (shuffling) is widely practiced and 
 Your Bitcoin seed is basically a big random number.
 Worse, it's an important big random number because it protects your Bitcoin.
 And while big random numbers are easy for computers to handle, they pose a challenge for humans.
-People are generally not good at working with numbers with many digits, and in Bitcoin the stakes are high.
+People are generally not good at working with numbers with many significant digits, and in Bitcoin the stakes are high.
 
 The BIP39 standard was developed to help with this.
 It uses a list of 2048 words where each word corresponds to 11 bits of data.
