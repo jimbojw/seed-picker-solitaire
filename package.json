@@ -1,6 +1,6 @@
 {
   "name": "seed-picker-solitaire",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate a BIP39 seed phrase offline using an ordinary deck of playing cards.",
   "main": "index.js",
   "scripts": {
