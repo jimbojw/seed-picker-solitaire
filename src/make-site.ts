@@ -32,8 +32,8 @@ import * as markdownItHeaderSections from 'markdown-it-header-sections';
 import {Logger, TLogLevelName} from 'tslog';
 
 // Local modules.
+import {htmlToPdf} from './lib/html-to-pdf';
 import {makeLookupTable} from './lib/make-lookup-table';
-import {makeWordPresenceTable} from './lib/make-word-presence-table';
 import {resolveCssImports} from './lib/resolve-css-imports';
 import * as pkg from '../package.json';
 
@@ -95,9 +95,27 @@ async function main() {
   const tableSection = article.append('section');
   await makeLookupTable(tableSection.node() as HTMLElement);
 
-  const indexFile = path.join(distDir, 'index.html');
-  log.info(`Writing word lookup HTML table to ${indexFile}.`);
-  await fs.outputFile(indexFile, dom.serialize());
+  const siteHtmlFile = path.join(distDir, 'seed-picker-solitaire.html');
+  log.info(`Writing site HTML file to ${siteHtmlFile}.`);
+  await fs.outputFile(siteHtmlFile, dom.serialize());
+
+  // Convert HTML file to PDF.
+  const sitePdfFile = path.join(distDir, 'seed-picker-solitaire.pdf');
+  await htmlToPdf({
+    htmlFile: siteHtmlFile,
+    pdfFile: sitePdfFile,
+    log,
+  });
+
+  // Create meta refresh page.
+  const indexHtml = `<!DOCTYPE html><html><head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta http-equiv="refresh" content="0;url=seed-picker-solitaire.pdf" />
+  </head></html>`.replace(/>[\s]+</mg, '><');
+  const indexHtmlFile = path.join(distDir, 'index.html');
+  log.info(`Writing redirecting index HTML file to ${indexHtmlFile}.`);
+  await fs.outputFile(indexHtmlFile, indexHtml);
 
   log.info('Done!');
 }
