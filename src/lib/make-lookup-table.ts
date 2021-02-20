@@ -33,12 +33,14 @@ import {CARDS, TUPLES} from './deck';
  * lookup table.
  */
 export async function makeLookupTable(container: HTMLElement) {
-  // Tuples are arranged by first card. Each card is a table with a single row.
+  // Tuples are arranged by first card. Each card is a table for its suit.
   const rows = d3.select(container)
     .classed('lookup-table', true)
-    .append('table')
+    .selectAll('table')
+    .data(d3.range(4))
+    .join('table')
     .selectAll('tr')
-    .data(CARDS)
+    .data(suitIndex => CARDS.slice(suitIndex * 13, (suitIndex + 1) * 13))
     .join('tr')
     .each((d, i, nodes) => d3.select(nodes[i])
         .classed(`card-rank-${d.rank}`, true)
