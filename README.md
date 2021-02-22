@@ -117,7 +117,13 @@ Here were the results from one execution of ten million runs:
 }
 ```
 
-Instructions for running this simulation, and other project commands, are in the following section.
+Instructions for running this simulation, and other project commands, are in the last section of this document.
+
+Is 205 bits enough?
+In practice, yes.
+Once a pubkey is revealed—which it must be to spend—the complexity of determining the private key is 2<sup>128</sup>.
+(See [Pieter Wuille's explanation](https://bitcoin.stackexchange.com/questions/72612/bip32-recommends-a-256-bit-seed-why-do-most-bitcoin-wallets-only-use-a-128-bit/75588#75588)).
+Additional entropy beyond 128 bits does not make a brute-force attacker's job harder.
 
 ## Running the code
 
