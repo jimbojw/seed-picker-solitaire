@@ -4,13 +4,15 @@
   "description": "Generate a BIP39 seed phrase offline using an ordinary deck of playing cards.",
   "main": "index.js",
   "scripts": {
-    "sim-unsuited-bits": "./src/sim-unsuited-bits",
-    "sim-unsuited-bits-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/sim-unsuited-bits.ts'",
     "make-site": "ts-node ./src/make-site.ts",
     "make-site-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-site.ts'",
     "make-table": "ts-node ./src/make-table.ts",
     "make-table-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/make-table.ts'",
     "publish-site": "gh-pages -d ./dist/",
+    "sim-sticky-shuffle": "./src/sim-sticky-shuffle",
+    "sim-sticky-shuffle-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/sim-sticky-shuffle.ts'",
+    "sim-unsuited-bits": "./src/sim-unsuited-bits",
+    "sim-unsuited-bits-dev": "LOG_LEVEL=silly nodemon --exec 'node --trace-warnings -r ts-node/register ./src/sim-unsuited-bits.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -125,6 +125,66 @@ Once a pubkey is revealed—which it must be to spend—the complexity of determ
 (See [Pieter Wuille's explanation](https://bitcoin.stackexchange.com/questions/72612/bip32-recommends-a-256-bit-seed-why-do-most-bitcoin-wallets-only-use-a-128-bit/75588#75588)).
 Additional entropy beyond 128 bits does not make a brute-force attacker's job harder.
 
+### How much shuffling is enough?
+
+The SeedPicker Solitaire instructions begin by requiring that the deck of cards is shuffled thoroughly.
+But how much shuffling is enough?
+
+To attempt to answer this question, let's quantify it.
+A shuffled deck of cards has 52 card slots.
+Let's number them from 0 through 51.
+
+Ideally, each card should have an equal chance of showing up in each slot.
+So for each slot, there are 52 possibilities, each of which should have a 1/52 chance of occurring.
+Using the [Shannon entropy formula](https://en.wikipedia.org/wiki/Entropy_(information_theory)), each card slot represents up to 5.7 bits of entropy.
+
+Now let's model the standard [riffle shuffle](https://en.wikipedia.org/wiki/Shuffling#Riffle).
+In a riffle shuffle, the deck is cut in half and then interleaved.
+In practice, cards are somewhat sticky, so let's model a stickiness parameter as well.
+
+The code in `src/sim-sticky-shuffle.ts` does this.
+The *stickiness* value is varied from 0.1 to 0.99.
+A stickiness of 0 would mean that the riffle is carried out perfectly (alternating between left and right hands).
+A stickiness of 1 would mean that the cards are perfectly sticky (never alternating, basically a cut).
+
+For each stickiness value, the script models shuffling from 1 to 15 times.
+For each stickiness/shuffle-count pair, the script runs 100,000 trials.
+Then it computes the minimum entropy among the first 46 card slots.
+(Recall that in SeedPicker Solitaire we use the top 46 cards as 23 word-yielding tuples.)
+
+Since the entropy formula is base-agnostic, it's convenient to use base 52.
+That way, the range of possible entropy values for any card slot is 0 (for perfectly predictable) to 1 (for maximally random).
+Using .99 as the threshold for minimum acceptable entropy, the script produces the following table:
+
+|     Shuffles |          0.1 |          0.5 |          0.8 |          0.9 |         0.95 |         0.99 |
+| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
+|            1 |      0.17542 |      0.17542 |      0.17543 |      0.17542 |      0.17542 |      0.17542 |
+|            2 |      0.51302 |      0.64649 |      0.72376 |      0.71830 |      0.63120 |      0.35372 |
+|            3 |      0.78068 |      0.89638 |      0.90802 |      0.89663 |      0.82353 |      0.47697 |
+|            4 |      0.94985 |      0.96936 |      0.97102 |      0.96335 |      0.91358 |      0.57082 |
+|            5 |      0.98755 |  **0.99063** |  **0.99155** |      0.98781 |      0.95930 |      0.64507 |
+|            6 |  **0.99823** |  **0.99762** |  **0.99767** |  **0.99601** |      0.98201 |      0.70915 |
+|            7 |  **0.99953** |  **0.99928** |  **0.99930** |  **0.99877** |  **0.99173** |      0.75960 |
+|            8 |  **0.99982** |  **0.99977** |  **0.99975** |  **0.99951** |  **0.99659** |      0.80027 |
+|            9 |  **0.99989** |  **0.99989** |  **0.99987** |  **0.99983** |  **0.99845** |      0.83685 |
+|           10 |  **0.99991** |  **0.99991** |  **0.99990** |  **0.99991** |  **0.99934** |      0.86174 |
+|           11 |  **0.99989** |  **0.99991** |  **0.99991** |  **0.99990** |  **0.99969** |      0.88729 |
+|           12 |  **0.99990** |  **0.99991** |  **0.99990** |  **0.99989** |  **0.99986** |      0.90726 |
+|           13 |  **0.99992** |  **0.99990** |  **0.99989** |  **0.99990** |  **0.99990** |      0.92438 |
+|           14 |  **0.99990** |  **0.99991** |  **0.99991** |  **0.99990** |  **0.99990** |      0.93679 |
+|           15 |  **0.99991** |  **0.99990** |  **0.99990** |  **0.99988** |  **0.99991** |      0.94839 |
+
+This result confirms the commonly held assumptions that **7 shuffles** is sufficient.
+Even in a deck where cards have a 95% chance of sticking together when riffled, 7 shuffles produces outcomes that satisfy the .99 minimum entropy threshold for the slot with least entropy.
+However, for a deck that is 99% sticky, even 15 shuffles is not sufficient to meet our minimum entropy threshold.
+
+A few parameters that are not varied by the simulation script:
+
+* *Bias in leading card choice* - The model assumes there's a 50/50 chance that the leading card of the riffle comes from either the left- or right-hand half of the cards.
+* *Split point* - The model always cuts the deck exactly down the middle (26 cards in each hand).
+
+These parameters could be varied to determine minimum shuffle count thresholds for various cases.
+
 ## Running the code
 
 This repo contains several commands you can run which do different things.
@@ -148,6 +208,7 @@ Where `<command-name>` is one of the following:
 * `make-site` - Produces the PDF to be published to the live site.
   Also creates an `index.html` file which uses a `<meta>` tag to redirect to the PDF file.
 * `publish-site` - Uses the `gh-pages` npm module to push the contents of the `dist/` directory up to the live site.
+* `sim-sticky-shuffle` - Perform a simulation to compute the minimum entropy for various shuffling conditions.
 * `sim-unsuited-bits` - Perform a simulation to compute the number of bits of entropy represented by seeds encoded using SeedPicker Solitaire.
 
 Most commands also include a `-dev` variant which watches the `src/` directory for changes and automatically re-runs the code when files change.
