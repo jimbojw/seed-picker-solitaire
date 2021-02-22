@@ -81,23 +81,26 @@ So instead of each word encoding 11 bits of entropy, it encodes roughly 10.98 bi
 
 ## Running the code
 
-To run the code in this repo to produce the lookup table, you'll need Node.js.
-Install Node.js, then install the prerequisites using the following command:
+This repo contains several commands you can run which do different things.
+To begin, you'll need Node.js.
+Once that's installed, open a terminal and install this project's dependencies via npm:
 
 ```sh
 $ npm install
 ```
 
-To make the table just once, run this command:
+To run a command, use this syntax:
 
 ```sh
-$ npm run make-table
+$ num rpn <command-name>
 ```
 
-To keep the table making code running continuously, run this command:
+Where command name is one of the following:
 
-```sh
-$ npm run make-table-dev
-```
+* `make-table` - Produces a standalone HTML file called `lookup-table.html` that shows the mappings between card tuples and seed words.
+  Also writes out `word-presence.txt`, a text file showing which tuples yield seed words (`#`) and which do not (`.`).
+* `make-site` - Produces the PDF to be published to the live site.
+  Also creates an `index.html` file which uses a `<meta>` tag to redirect to the PDF file.
+* `publish-site` - Uses the `gh-pages` npm module to push the contents of the `dist/` directory up to the live site.
 
-This code will create a `dist` directory if it doesn't already exist and place a file called `lookup-table.html` there.
+Most commands also include a `-dev` variant which watches the `src/` directory for changes and automatically re-runs the code when files change.
