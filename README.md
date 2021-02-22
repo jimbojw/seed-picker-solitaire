@@ -79,6 +79,46 @@ This is a quick and easy operation for a person to perform, compared to looking 
 The downside of this suit-based shortcut is that there are 20 of the 2048 words which would never be picked.
 So instead of each word encoding 11 bits of entropy, it encodes roughly 10.98 bits.
 
+### What are the trade-offs of using the full deck?
+
+Each word of a BIP39 seed phrase encodes 11 bits of data.
+In total, a 24-word BIP39 seed phrase encodes 256 bits of entropy plus an 8 bit checksum.
+The first 23 words are all entropy.
+The 24th word contains 3 bits of entropy followed by the 8 bit checksum value.
+(For more detail, see the [seed entropy playground](https://observablehq.com/@jimbojw/grokking-bip39)).
+
+If you use only the first 23 words of a BIP39 seed for data, then the total number of entropy bits is 23 x 11 = 253.
+If you shuffle and replace cards between each pick using the SeedPicker Solitaire lookup table, you can preserve all 253 bits.
+Without replacing and reshuffling, entropy is lost.
+This is because there are fewer orderings of cards that yield words than there are potential word combinations.
+There will be no repeat words, or even repeated cards, using a SeedPicker Solitaire ordering.
+
+So how much entropy remains when using the full deck as described in SeedPicker Solitaire?
+The current best estimate is slightly more than **205 bits**.
+
+How was this computed?
+In three steps:
+
+1. Run a simulation of shuffling and count how many of those shuffled orderings meet the criteria that they begin with at least 23 unsuited tuples.
+2. Multiply this rate against the total number of possible orderings that could yield seeds (52!/6!).
+3. Take the log base-2 of that estimate.
+
+Code for performing this estimate is in the `src/sim-unsuited-bits.ts` file.
+Here were the results from one execution of ten million runs:
+
+```
+{
+  RUNS: 10000000,
+  count: 6584,
+  rate: 0.0006584,
+  orderings: 1.1202524329297762e+65,
+  estimate: 7.375742018409645e+61,
+  bits: 205.52040198358318
+}
+```
+
+Instructions for running this simulation, and other project commands, are in the following section.
+
 ## Running the code
 
 This repo contains several commands you can run which do different things.
@@ -92,15 +132,16 @@ $ npm install
 To run a command, use this syntax:
 
 ```sh
-$ num rpn <command-name>
+$ num run <command-name>
 ```
 
-Where command name is one of the following:
+Where `<command-name>` is one of the following:
 
 * `make-table` - Produces a standalone HTML file called `lookup-table.html` that shows the mappings between card tuples and seed words.
   Also writes out `word-presence.txt`, a text file showing which tuples yield seed words (`#`) and which do not (`.`).
 * `make-site` - Produces the PDF to be published to the live site.
   Also creates an `index.html` file which uses a `<meta>` tag to redirect to the PDF file.
 * `publish-site` - Uses the `gh-pages` npm module to push the contents of the `dist/` directory up to the live site.
+* `sim-unsuited-bits` - Perform a simulation to compute the number of bits of entropy represented by seeds encoded using SeedPicker Solitaire.
 
 Most commands also include a `-dev` variant which watches the `src/` directory for changes and automatically re-runs the code when files change.
