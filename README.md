@@ -174,7 +174,7 @@ Using .99 as the threshold for minimum acceptable entropy, the script produces t
 |           14 |  **0.99990** |  **0.99991** |  **0.99991** |  **0.99990** |  **0.99990** |      0.93679 |
 |           15 |  **0.99991** |  **0.99990** |  **0.99990** |  **0.99988** |  **0.99991** |      0.94839 |
 
-This result confirms the commonly held assumptions that **7 shuffles** is sufficient.
+This result confirms the commonly reported result that **7 shuffles** is sufficient.
 Even in a deck where cards have a 95% chance of sticking together when riffled, 7 shuffles produces outcomes that satisfy the .99 minimum entropy threshold for the slot with least entropy.
 However, for a deck that is 99% sticky, even 15 shuffles is not sufficient to meet our minimum entropy threshold.
 
